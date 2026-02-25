@@ -1,0 +1,313 @@
+/* Voice AI Widget Styles - Animated Bubble */
+#voiceai-widget-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+/* Default CTA Prompt */
+.voiceai-cta {
+    background: white;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+    position: relative;
+    animation: bounce-cta 2s infinite;
+    transform-origin: bottom right;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.voiceai-cta span {
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* Little tail on the speech bubble */
+.voiceai-cta::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    right: 35px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    transform: rotate(45deg);
+    box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes bounce-cta {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Hide CTA when widget is active */
+.voiceai-btn.active~.voiceai-cta {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+}
+
+/* Glassmorphism Label */
+.voiceai-glass-label {
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    animation: float-bubble 4s ease-in-out infinite reverse;
+    transform-origin: bottom right;
+    transition: opacity 0.3s ease;
+}
+
+/* Hide label when call is active */
+.voiceai-btn.active~.voiceai-glass-label {
+    opacity: 0;
+}
+
+.voiceai-btn {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: #0f172a;
+    /* Dark core */
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+    overflow: hidden;
+
+    /* Floating idle animation */
+    animation: float-bubble 4s ease-in-out infinite;
+
+    /* CSS variables for smooth color transitions */
+    --orb-c1: rgba(16, 185, 129, 0.85);
+    /* Green */
+    --orb-c2: rgba(5, 150, 105, 0.85);
+    --orb-c3: rgba(52, 211, 153, 0.85);
+}
+
+@keyframes float-bubble {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.voiceai-btn:hover:not(:disabled) {
+    transform: translateY(-5px) scale(1.05) !important;
+    box-shadow: 0 15px 25px rgba(16, 185, 129, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.voiceai-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Active State (Blue talking mode) */
+.voiceai-btn.active {
+    width: 85px;
+    height: 85px;
+    --orb-c1: rgba(59, 130, 246, 0.85);
+    /* Blue */
+    --orb-c2: rgba(37, 99, 235, 0.85);
+    --orb-c3: rgba(96, 165, 250, 0.85);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Hovering while active (Red hangup mode) */
+.voiceai-btn.active:hover {
+    --orb-c1: rgba(239, 68, 68, 0.85);
+    /* Red */
+    --orb-c2: rgba(220, 38, 38, 0.85);
+    --orb-c3: rgba(248, 113, 113, 0.85);
+    box-shadow: 0 15px 35px rgba(239, 68, 68, 0.6), inset 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Button Content (Icons/Spinners) over the orb */
+.voiceai-btn-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.voiceai-icon {
+    font-size: 26px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transition: all 0.3s ease;
+}
+
+/* Change icon to phone hangup when hovering over the active call */
+.voiceai-btn.active:hover .voiceai-icon {
+    transform: rotate(135deg);
+    /* playful hangup rotation */
+}
+
+/* Spinner during connecting */
+.voiceai-spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: voiceai-spin 0.8s linear infinite;
+    display: none;
+}
+
+.voiceai-btn.loading .voiceai-spinner {
+    display: inline-block;
+}
+
+.voiceai-btn.loading .voiceai-icon {
+    display: none;
+}
+
+@keyframes voiceai-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Status Tooltip */
+.voiceai-status {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 25px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.voiceai-status.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.voiceai-status.error {
+    background: rgba(239, 68, 68, 0.95);
+    color: white;
+}
+
+.voiceai-status.success {
+    background: rgba(59, 130, 246, 0.95);
+    color: white;
+}
+
+/* AI Orb Animation Layers container */
+.voiceai-wave-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 1;
+    /* Below icons */
+}
+
+/* Individual blurry spots simulating dynamic orb gradients */
+.orb-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    filter: blur(15px);
+    mix-blend-mode: screen;
+    transition: background-color 0.5s ease;
+}
+
+.layer1 {
+    background-color: var(--orb-c1);
+    top: -15%;
+    left: -15%;
+    animation: orb-flow 3s ease-in-out infinite alternate;
+}
+
+.layer2 {
+    background-color: var(--orb-c2);
+    top: 15%;
+    right: -15%;
+    animation: orb-flow 4s ease-in-out infinite alternate-reverse;
+}
+
+.layer3 {
+    background-color: var(--orb-c3);
+    bottom: -15%;
+    left: 0%;
+    animation: orb-spin 5s linear infinite;
+}
+
+@keyframes orb-flow {
+    0% {
+        transform: scale(1) translate(-10%, -10%);
+    }
+
+    100% {
+        transform: scale(1.3) translate(10%, 10%);
+    }
+}
+
+@keyframes orb-spin {
+    0% {
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.3);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1.1);
+    }
+}

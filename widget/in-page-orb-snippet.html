@@ -1,0 +1,399 @@
+<!-- ========================================== -->
+<!-- ⚙️ WIDGET SETTINGS - ENTER YOUR IDs HERE -->
+<!-- ========================================== -->
+<script>
+    window.IN_PAGE_VOICE_AI_CONFIG = {
+        locationId: 'YOUR_LOCATION_ID_HERE',        // E.g. uLevhyRG6...
+        widgetId: 'YOUR_WIDGET_ID_HERE',            // E.g. 697ac304...
+        voiceAiConfigId: 'YOUR_AGENT_ID_HERE'       // E.g. 6986aa6d...
+    };
+</script>
+
+<!-- ========================================== -->
+<!--             DO NOT EDIT BELOW              -->
+<!-- ========================================== -->
+
+<style>
+    /* In-Page Orb Styles - Inline Block */
+    .in-page-orb-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 0 auto;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Central Orb Background */
+    .in-page-orb-bg {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+        background-size: 10px 10px;
+        border-radius: 50%;
+        mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 70%);
+        -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 70%);
+    }
+
+    /* The Liquid Glass Orb (Nova Palette) */
+    .in-page-liquid-orb {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e6e9ff 0%, #b8c5ff 50%, #90a5ff 100%);
+        box-shadow:
+            inset -5px -5px 15px rgba(144, 165, 255, 0.4),
+            inset 5px 5px 15px rgba(255, 255, 255, 1),
+            0 10px 25px rgba(144, 165, 255, 0.2);
+        z-index: 2;
+        overflow: hidden;
+        transform: translateZ(0);
+        transition: all 0.5s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .in-page-liquid-orb:hover {
+        transform: scale(1.05);
+        box-shadow:
+            inset -5px -5px 15px rgba(144, 165, 255, 0.5),
+            inset 5px 5px 15px rgba(255, 255, 255, 1),
+            0 15px 35px rgba(144, 165, 255, 0.3);
+    }
+
+    /* Internal swirling layers */
+    .in-page-liquid-layer {
+        position: absolute;
+        width: 150%;
+        height: 150%;
+        border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%;
+        mix-blend-mode: soft-light;
+        filter: blur(4px);
+        opacity: 0;
+        transition: opacity 1s ease;
+        pointer-events: none;
+    }
+
+    .in-page-liquid-layer.l1 {
+        background: rgba(255, 255, 255, 0.9);
+        top: -20%;
+        left: -20%;
+        animation: in-page-swirl 6s infinite linear;
+        animation-play-state: paused;
+    }
+
+    .in-page-liquid-layer.l2 {
+        background: rgba(140, 150, 255, 0.8);
+        bottom: -30%;
+        right: -30%;
+        animation: in-page-swirl 8s infinite linear reverse;
+        animation-play-state: paused;
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    .in-page-liquid-layer.l3 {
+        background: rgba(255, 255, 255, 0.6);
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
+        animation: in-page-swirl 12s infinite linear;
+        animation-play-state: paused;
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+
+    /* Active State (Talking) */
+    .in-page-liquid-orb.active {
+        animation: in-page-pulse 1.5s ease-in-out infinite alternate;
+    }
+
+    .in-page-liquid-orb.active .in-page-liquid-layer {
+        opacity: 1;
+        animation-play-state: running;
+    }
+
+    /* Play Button Icon */
+    .in-page-play-icon {
+        position: relative;
+        z-index: 10;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 12px 0 12px 20px;
+        border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+        margin-left: 5px;
+        /* Visual center adjustment */
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        transition: all 0.3s ease;
+    }
+
+    /* Microphone Icon when active */
+    .in-page-liquid-orb.active .in-page-play-icon {
+        border-width: 0;
+        width: auto;
+        height: auto;
+        margin-left: 0;
+    }
+
+    .in-page-liquid-orb.active .in-page-play-icon::before {
+        content: '🎙️';
+        font-size: 24px;
+        display: block;
+    }
+
+    /* Status Text Underneath */
+    .in-page-status-text {
+        margin-top: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        opacity: 1;
+        transition: color 0.3s ease;
+    }
+
+    /* Hangup State (Hovering while active) */
+    .in-page-liquid-orb.active:hover {
+        background: linear-gradient(135deg, #ffe6e6 0%, #ffb8b8 50%, #ff9090 100%);
+        box-shadow:
+            inset -5px -5px 15px rgba(255, 144, 144, 0.4),
+            inset 5px 5px 15px rgba(255, 255, 255, 1),
+            0 15px 35px rgba(255, 144, 144, 0.5);
+    }
+
+    .in-page-liquid-orb.active:hover .in-page-play-icon::before {
+        content: '✖';
+        font-size: 20px;
+        color: #e11d48;
+    }
+
+    /* Animations */
+    @keyframes in-page-pulse {
+        0% {
+            transform: scale(1) translateZ(0);
+            box-shadow: inset -5px -5px 15px rgba(144, 165, 255, 0.4), inset 5px 5px 15px rgba(255, 255, 255, 1), 0 0 20px rgba(180, 150, 255, 0.6), 0 15px 35px rgba(144, 165, 255, 0.3);
+        }
+
+        100% {
+            transform: scale(1.05) translateZ(0);
+            box-shadow: inset -5px -5px 15px rgba(144, 165, 255, 0.6), inset 5px 5px 15px rgba(255, 255, 255, 1), 0 0 50px rgba(180, 150, 255, 0.9), 0 15px 35px rgba(144, 165, 255, 0.5);
+        }
+    }
+
+    @keyframes in-page-swirl {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<!-- In-Page Orb Component -->
+<div class="in-page-orb-wrapper" id="in-page-voice-widget">
+    <div class="in-page-orb-bg">
+        <div class="in-page-liquid-orb" id="in-page-orb-btn" role="button" aria-label="Start Voice Call">
+            <div class="in-page-liquid-layer l1"></div>
+            <div class="in-page-liquid-layer l2"></div>
+            <div class="in-page-liquid-layer l3"></div>
+            <div class="in-page-play-icon"></div>
+        </div>
+    </div>
+    <div class="in-page-status-text" id="in-page-status">Click to talk to our AI</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@1.15.4/dist/livekit-client.umd.min.js"></script>
+<script>
+    (function initInPageWidget() {
+        // Fallback checks
+        if (typeof window.LivekitClient === 'undefined') {
+            console.error('In-Page Voice AI Widget: Failed to load LiveKit SDK');
+            return;
+        }
+
+        const userConfig = window.IN_PAGE_VOICE_AI_CONFIG || {};
+
+        const CONFIG = {
+            locationId: '',
+            widgetId: '',
+            voiceAiConfigId: '',
+            apiEndpoint: 'https://services.leadconnectorhq.com/chat-widget/public/start-voice-ai-call/',
+            livekitUrl: 'wss://retell-ai-4ihahnq7.livekit.cloud',
+            ...userConfig
+        };
+
+        const orbBtn = document.getElementById('in-page-orb-btn');
+        const statusText = document.getElementById('in-page-status');
+
+        let isCallActive = false;
+        let room = null;
+
+        // Helpers
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function generateMongoId() {
+            const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+            const random = Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+            return timestamp + random;
+        }
+
+        function generateContactId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 20; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+            return result;
+        }
+
+        async function startCall() {
+            if (!CONFIG.locationId || !CONFIG.widgetId || !CONFIG.voiceAiConfigId || CONFIG.locationId.includes('YOUR_LOCATION_ID')) {
+                alert('Please configure your Location ID, Widget ID, and Agent ID in the widget snippet.');
+                return;
+            }
+
+            orbBtn.style.pointerEvents = 'none'; // Prevent double clicks
+            statusText.textContent = 'Connecting...';
+
+            // Visual feedback
+            orbBtn.classList.add('active');
+
+            try {
+                const sessionId = generateUUID();
+                const payload = {
+                    contactId: generateContactId(),
+                    callId: generateMongoId(),
+                    widgetId: CONFIG.widgetId,
+                    locationId: CONFIG.locationId,
+                    sessionId: sessionId,
+                    sessionFingerprint: generateUUID(),
+                    eventData: {
+                        source: 'direct',
+                        referrer: document.referrer || '',
+                        keyword: '',
+                        adSource: '',
+                        url_params: {},
+                        page: { url: window.location.href, title: document.title },
+                        timestamp: Date.now(),
+                        campaign: '',
+                        contactSessionIds: { ids: [sessionId] },
+                        type: 'page-visit',
+                        pageVisitType: 'text-widget',
+                        domain: window.location.hostname,
+                        version: 'v3',
+                        parentId: '',
+                        parentName: '',
+                        fingerprint: null,
+                        documentURL: window.location.href
+                    }
+                };
+
+                const response = await fetch(CONFIG.apiEndpoint + CONFIG.voiceAiConfigId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': '*/*' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error('Server connection failed (' + response.status + ')');
+                const data = await response.json();
+
+                room = new window.LivekitClient.Room({
+                    adaptiveStream: true,
+                    dynacast: true,
+                    audioCaptureDefaults: {
+                        autoGainControl: true,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    }
+                });
+
+                room.on(window.LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (track.kind === window.LivekitClient.Track.Kind.Audio) {
+                        const audioElement = track.attach();
+                        audioElement.setAttribute('data-voiceai-audio', 'in-page-widget');
+                        document.body.appendChild(audioElement);
+                    }
+                });
+
+                room.on(window.LivekitClient.RoomEvent.Disconnected, () => {
+                    if (isCallActive) endCall();
+                });
+
+                await room.connect(CONFIG.livekitUrl, data.accessToken);
+                await room.localParticipant.setMicrophoneEnabled(true);
+
+                isCallActive = true;
+                orbBtn.style.pointerEvents = 'auto';
+                statusText.textContent = 'Agent Connected';
+                statusText.style.color = '#10b981';
+
+            } catch (error) {
+                console.error('Widget Error starting call:', error);
+                statusText.textContent = 'Connection failed';
+                statusText.style.color = '#e11d48';
+
+                orbBtn.classList.remove('active');
+
+                setTimeout(() => {
+                    orbBtn.style.pointerEvents = 'auto';
+                    statusText.textContent = 'Click to talk to our AI';
+                    statusText.style.color = '#64748b';
+                }, 3000);
+            }
+        }
+
+        async function endCall() {
+            orbBtn.style.pointerEvents = 'none';
+            statusText.textContent = 'Disconnecting...';
+            statusText.style.color = '#64748b';
+
+            try {
+                if (room) {
+                    await room.disconnect();
+                    room = null;
+                }
+
+                document.querySelectorAll('[data-voiceai-audio="in-page-widget"]').forEach(el => el.remove());
+
+                isCallActive = false;
+                orbBtn.style.pointerEvents = 'auto';
+                orbBtn.classList.remove('active');
+
+                statusText.textContent = 'Click to talk to our AI';
+                statusText.style.color = '#64748b';
+
+            } catch (error) {
+                console.error('Widget Error ending call:', error);
+                orbBtn.style.pointerEvents = 'auto';
+                statusText.textContent = 'Click to talk to our AI';
+            }
+        }
+
+        orbBtn.addEventListener('click', () => {
+            if (isCallActive) {
+                endCall();
+            } else {
+                startCall();
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (room && isCallActive) room.disconnect();
+        });
+
+        console.log("In-Page Orb Widget Snippet loaded.");
+    })();
+</script>

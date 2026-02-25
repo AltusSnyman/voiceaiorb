@@ -1,0 +1,3 @@
+/test      /test.html         200
+/orb       /in-page-orb.html  200
+/widgets/* /widget/:splat     200

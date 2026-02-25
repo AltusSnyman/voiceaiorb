@@ -1,0 +1,466 @@
+<!-- ========================================== -->
+<!-- ⚙️ WIDGET SETTINGS - ENTER YOUR IDs HERE -->
+<!-- ========================================== -->
+<script>
+    window.MESH_IN_PAGE_VOICE_AI_CONFIG = {
+        locationId: 'YOUR_LOCATION_ID_HERE',        // E.g. uLevhyRG6...
+        widgetId: 'YOUR_WIDGET_ID_HERE',            // E.g. 697ac304...
+        voiceAiConfigId: 'YOUR_AGENT_ID_HERE'       // E.g. 6986aa6d...
+    };
+</script>
+
+<!-- ========================================== -->
+<!--             DO NOT EDIT BELOW              -->
+<!-- ========================================== -->
+
+<style>
+    /* Dynamic Mesh Orb Styles */
+    .in-page-orb-mesh-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 0 auto;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .mesh-orb-container {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        /* Subtle glow acting as a backdrop */
+        background: radial-gradient(circle at center, rgba(138, 43, 226, 0.2) 0%, rgba(0, 0, 0, 0) 60%);
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .mesh-orb-container:hover {
+        transform: scale(1.05);
+        background: radial-gradient(circle at center, rgba(138, 43, 226, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+
+    .mesh-orb-container.active {
+        background: radial-gradient(circle at center, rgba(138, 43, 226, 0.6) 0%, rgba(0, 0, 0, 0) 80%);
+    }
+
+    .mesh-orb-container.active:hover {
+        /* Hangup state background */
+        background: radial-gradient(circle at center, rgba(225, 29, 72, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+
+    /* Canvas for WebGL Injection */
+    .mesh-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        pointer-events: none;
+        /* Let clicks pass to the container */
+        z-index: 1;
+    }
+
+    /* Play/Mic Icon overlay */
+    .mesh-icon-overlay {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 50%;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .mesh-orb-container:hover .mesh-icon-overlay {
+        background: rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .mesh-play-icon {
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 10px 0 10px 16px;
+        border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+        margin-left: 4px;
+        transition: all 0.3s ease;
+    }
+
+    /* Active (Mic) State */
+    .mesh-orb-container.active .mesh-play-icon {
+        border-width: 0;
+        width: auto;
+        height: auto;
+        margin-left: 0;
+    }
+
+    .mesh-orb-container.active .mesh-play-icon::before {
+        content: '🎙️';
+        font-size: 20px;
+        display: block;
+    }
+
+    /* Hangup State */
+    .mesh-orb-container.active:hover .mesh-icon-overlay {
+        background: rgba(225, 29, 72, 0.2);
+        border-color: rgba(225, 29, 72, 0.5);
+    }
+
+    .mesh-orb-container.active:hover .mesh-play-icon::before {
+        content: '✖';
+        font-size: 18px;
+        color: #ffb3c1;
+    }
+
+    /* Status Text Underneath */
+    .mesh-status-text {
+        margin-top: 15px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: color 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Explicit Hangup Button */
+    .mesh-hangup-btn {
+        margin-top: 10px;
+        padding: 6px 18px;
+        border-radius: 20px;
+        background: rgba(225, 29, 72, 0.15);
+        color: #ffb3c1;
+        border: 1px solid rgba(225, 29, 72, 0.4);
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .mesh-hangup-btn:hover {
+        background: rgba(225, 29, 72, 0.4);
+        border-color: rgba(225, 29, 72, 0.8);
+        color: #fff;
+    }
+</style>
+
+<!-- In-Page Orb Component -->
+<div class="in-page-orb-mesh-wrapper" id="in-page-voice-widget-mesh">
+    <div class="mesh-orb-container" id="mesh-orb-btn" role="button" aria-label="Start Dynamic Voice Call">
+        <!-- Canvas will be injected strictly inside the container via JS -->
+        <div class="mesh-icon-overlay">
+            <div class="mesh-play-icon" id="mesh-icon-internal"></div>
+        </div>
+    </div>
+    <div class="mesh-status-text" id="mesh-status-text">Initialize AI</div>
+    <div class="mesh-hangup-btn" id="mesh-hangup-btn" style="display: none;">End Call</div>
+</div>
+
+<!-- Load Three.js for 3D Mesh Rendering -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Load LiveKit for Voice -->
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@1.15.4/dist/livekit-client.umd.min.js"></script>
+
+<script>
+    (function initDynamicMeshWidget() {
+        if (typeof window.LivekitClient === 'undefined') {
+            console.error('Dynamic Mesh Voice AI Widget: Failed to load LiveKit SDK');
+            return;
+        }
+
+        const userConfig = window.MESH_IN_PAGE_VOICE_AI_CONFIG || {};
+
+        const CONFIG = {
+            locationId: '',
+            widgetId: '',
+            voiceAiConfigId: '',
+            apiEndpoint: 'https://services.leadconnectorhq.com/chat-widget/public/start-voice-ai-call/',
+            livekitUrl: 'wss://retell-ai-4ihahnq7.livekit.cloud',
+            ...userConfig
+        };
+
+        const orbBtn = document.getElementById('mesh-orb-btn');
+        const statusText = document.getElementById('mesh-status-text');
+        const hangupBtn = document.getElementById('mesh-hangup-btn');
+
+        let isCallActive = false;
+        let room = null;
+
+        // --- WebGL 3D Animation Logic ---
+        let scene, camera, renderer, mesh, clock, geometry, originalPositions;
+        let isAnimatingActiveState = false;
+
+        function init3D() {
+            if (typeof THREE === 'undefined') return;
+
+            scene = new THREE.Scene();
+            // Match camera fov and distance to container size tightly
+            camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+            camera.position.z = 2.4;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(160, 160);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.domElement.className = 'mesh-canvas';
+            orbBtn.insertBefore(renderer.domElement, orbBtn.firstChild);
+
+            clock = new THREE.Clock();
+
+            // Create an Icosahedron with high detail for a smooth wireframe mesh
+            geometry = new THREE.IcosahedronGeometry(1, 4);
+
+            // Save original vertices for morphing
+            originalPositions = Float32Array.from(geometry.attributes.position.array);
+
+            // Create a custom material with vertex colors or a gradient-like appearance
+            // Using a basic wireframe with a magenta/blue hue that mimics the request
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xc084fc, // vibrant purple-ish
+                wireframe: true,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Start animation loop
+            requestAnimationFrame(animate3D);
+        }
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+
+            const time = clock.getElapsedTime();
+
+            // Constant slow idle rotation
+            mesh.rotation.y += 0.005;
+            mesh.rotation.x += 0.003;
+
+            // Morphing logic when active (talking)
+            if (isAnimatingActiveState) {
+                // Aggressive, fast undulating mesh (Dynamic Speech Bubble effect)
+                const positions = geometry.attributes.position.array;
+                const speed = 3.0;
+                const intensity = 0.15; // How much it morphs
+
+                for (let i = 0; i < positions.length; i += 3) {
+                    const ox = originalPositions[i];
+                    const oy = originalPositions[i + 1];
+                    const oz = originalPositions[i + 2];
+
+                    // Math.sin mapping based on xyz coordinates creates a bubbly, organic distortion pattern
+                    const distortion = Math.sin(ox * 4 + time * speed) *
+                        Math.cos(oy * 4 + time * speed) *
+                        Math.sin(oz * 4 + time * speed);
+
+                    // Push vertices along their normal (out from the center sphere)
+                    const scale = 1 + (distortion * intensity);
+
+                    positions[i] = ox * scale;
+                    positions[i + 1] = oy * scale;
+                    positions[i + 2] = oz * scale;
+                }
+                geometry.attributes.position.needsUpdate = true;
+
+                // Color pulse: shifting towards bright blue/cyan when active
+                const pulse = (Math.sin(time * 6) + 1) / 2; // 0 to 1
+                mesh.material.color.setHSL(0.75 - (pulse * 0.15), 1.0, 0.6 + (pulse * 0.2));
+            } else {
+                // Return to pure sphere when dormant
+                const positions = geometry.attributes.position.array;
+                let needsUpdate = false;
+                for (let i = 0; i < positions.length; i++) {
+                    if (Math.abs(positions[i] - originalPositions[i]) > 0.001) {
+                        // Lerp back to original shape smoothly
+                        positions[i] += (originalPositions[i] - positions[i]) * 0.1;
+                        needsUpdate = true;
+                    }
+                }
+                if (needsUpdate) geometry.attributes.position.needsUpdate = true;
+
+                // Return to base color
+                mesh.material.color.setHex(0xc084fc);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize WebGL on load
+        init3D();
+
+        // --- LiveKit Connection Logic ---
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function generateMongoId() {
+            return Math.floor(Date.now() / 1000).toString(16).padStart(8, '0') +
+                Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        }
+
+        function generateContactId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            return Array.from({ length: 20 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+        }
+
+        async function startCall() {
+            console.log("startCall triggered");
+            if (!CONFIG.locationId || !CONFIG.widgetId || !CONFIG.voiceAiConfigId || CONFIG.locationId.includes('YOUR_LOCATION_ID')) {
+                console.log("Invalid config, aborting startCall");
+                alert('Please configure your Location ID, Widget ID, and Agent ID in the widget snippet.');
+                return;
+            }
+
+            orbBtn.style.pointerEvents = 'none'; // Prevent double clicks
+            statusText.textContent = 'Connecting via neural link...';
+
+            // Visual feedback
+            orbBtn.classList.add('active');
+            isAnimatingActiveState = true; // Start 3D morphing overlay immediately
+
+            try {
+                const sessionId = generateUUID();
+                const payload = {
+                    contactId: generateContactId(),
+                    callId: generateMongoId(),
+                    widgetId: CONFIG.widgetId,
+                    locationId: CONFIG.locationId,
+                    sessionId: sessionId,
+                    sessionFingerprint: generateUUID(),
+                    eventData: {
+                        source: 'direct',
+                        referrer: document.referrer || '',
+                        keyword: '',
+                        url_params: {},
+                        page: { url: window.location.href, title: document.title },
+                        timestamp: Date.now(),
+                        type: 'page-visit',
+                        pageVisitType: 'text-widget',
+                        domain: window.location.hostname
+                    }
+                };
+
+                const response = await fetch(CONFIG.apiEndpoint + CONFIG.voiceAiConfigId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': '*/*' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error('Server connection failed (' + response.status + ')');
+                const data = await response.json();
+
+                room = new window.LivekitClient.Room({
+                    adaptiveStream: true,
+                    dynacast: true,
+                    audioCaptureDefaults: {
+                        autoGainControl: true,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    }
+                });
+
+                room.on(window.LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (track.kind === window.LivekitClient.Track.Kind.Audio) {
+                        const audioElement = track.attach();
+                        audioElement.setAttribute('data-voiceai-audio', 'in-page-widget-mesh');
+                        document.body.appendChild(audioElement);
+                    }
+                });
+
+                room.on(window.LivekitClient.RoomEvent.Disconnected, () => {
+                    if (isCallActive) endCall();
+                });
+
+                await room.connect(CONFIG.livekitUrl, data.accessToken);
+                await room.localParticipant.setMicrophoneEnabled(true);
+
+                isCallActive = true;
+                orbBtn.style.pointerEvents = 'auto'; // CRITICAL: This allows clicking again to hang up
+                statusText.textContent = 'Agent Connected';
+                statusText.style.color = '#c084fc';
+                hangupBtn.style.display = 'block'; // Show manual hangup button
+                console.log("startCall completed successfully, isCallActive:", isCallActive);
+
+            } catch (error) {
+                console.error('Widget Error starting call:', error);
+                statusText.textContent = 'Connection failed';
+                statusText.style.color = '#e11d48';
+
+                orbBtn.classList.remove('active');
+                isAnimatingActiveState = false;
+
+                setTimeout(() => {
+                    orbBtn.style.pointerEvents = 'auto';
+                    statusText.textContent = 'Initialize AI';
+                    statusText.style.color = '#94a3b8';
+                }, 3000);
+            }
+        }
+
+        async function endCall() {
+            if (!isCallActive) return;
+            console.log("endCall triggered. isCallActive:", isCallActive);
+            isCallActive = false; // Synchronous lock against recursive LiveKit disconnect events
+
+            orbBtn.style.pointerEvents = 'none';
+            if (hangupBtn) hangupBtn.style.display = 'none';
+            statusText.textContent = 'Terminating connection...';
+            statusText.style.color = '#94a3b8';
+            isAnimatingActiveState = false; // Stop dynamic mesh morphing immediately
+
+            try {
+                if (room) {
+                    console.log("Disconnecting room...");
+                    await room.disconnect();
+                    room = null;
+                }
+            } catch (e) {
+                console.warn('Error disconnecting room:', e);
+            }
+
+            // Cleanup DOM regardless of room.disconnect success
+            document.querySelectorAll('[data-voiceai-audio="in-page-widget-mesh"]').forEach(el => el.remove());
+
+            orbBtn.style.pointerEvents = 'auto';
+            orbBtn.classList.remove('active');
+            statusText.textContent = 'Initialize AI';
+        }
+
+        if (hangupBtn) {
+            hangupBtn.addEventListener('click', () => {
+                if (isCallActive) endCall();
+            });
+        }
+
+        orbBtn.addEventListener('click', (e) => {
+            console.log("Orb clicked! isCallActive =", isCallActive);
+            if (isCallActive) endCall();
+            else startCall();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (room && isCallActive) room.disconnect();
+        });
+
+        console.log("Dynamic Mesh In-Page Orb initialized with WebGL.");
+    })();
+</script>

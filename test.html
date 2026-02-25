@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Sandbox | AI Agency Mentorship</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <div id="widget-injection-point"></div>
+    <script>
+        // Use the user's known LeadConnector / Retell IDs
+        window.NOVA_CONFIG = {
+            locationId: 'YOUR_LOCATION_ID_HERE',
+            widgetId: 'YOUR_WIDGET_ID_HERE',
+            voiceAiConfigId: 'YOUR_AGENT_ID_HERE',
+            apiEndpoint: 'https://services.leadconnectorhq.com/chat-widget/public/start-voice-ai-call/',
+            livekitUrl: 'wss://retell-ai-4ihahnq7.livekit.cloud'
+        };
+
+        async function injectGreenNovaWidget() {
+            try {
+                const response = await fetch('widget/green-nova-widget-snippet.html');
+                if (!response.ok) throw new Error("Failed to load snippet");
+
+                const html = await response.text();
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+
+                const injectionPoint = document.getElementById('widget-injection-point');
+                injectionPoint.innerHTML = '';
+
+                Array.from(tempDiv.childNodes).forEach(node => {
+                    if (node.tagName !== 'SCRIPT') {
+                        injectionPoint.appendChild(node.cloneNode(true));
+                    }
+                });
+
+                const scripts = tempDiv.getElementsByTagName('script');
+                for (let i = 0; i < scripts.length; i++) {
+                    const newScript = document.createElement('script');
+                    if (scripts[i].src) {
+                        newScript.src = scripts[i].src;
+                    } else {
+                        newScript.textContent = scripts[i].textContent;
+                    }
+                    injectionPoint.appendChild(newScript);
+                }
+
+            } catch (error) {
+                console.error("Error injecting widget:", error);
+            }
+        }
+
+        injectGreenNovaWidget();
+    </script>
+    </body>
+
+</html>

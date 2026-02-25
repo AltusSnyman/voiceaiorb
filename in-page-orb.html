@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice AI Widget - In-Page Orb Prototype</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Specific Styles for this demo page */
+        .hero-section {
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 16px;
+            margin: 40px auto;
+            max-width: 1000px;
+            padding: 40px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4), var(--bg-dark));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            background: linear-gradient(135deg, white, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Container where the in-page snippet gets injected */
+        #in-page-injection-point {
+            margin-top: 20px;
+            min-height: 85px;
+            /* Minimum height for the orb */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">🔮</span> In-Page Orb Prototype
+            </div>
+            <a href="index.html" class="internal-link">← Back to Main Generator</a>
+        </div>
+    </header>
+
+    <!-- Test Environment -->
+    <main class="container">
+
+        <!-- Mock Hero Section -->
+        <section class="hero-section">
+            <div class="hero-bg"></div>
+            <div class="hero-overlay"></div>
+
+            <div class="hero-content">
+                <div>
+                    <h1 class="hero-title">Talk to our AI Experts directly from the page.</h1>
+                    <p class="hero-desc">No popups, no hidden menus. Just click the orb below and tell us what you need.
+                        Our intelligent assistant is ready 24/7.</p>
+                </div>
+
+                <!-- This is where the Snippet will live inline -->
+                <div id="in-page-injection-point"></div>
+
+            </div>
+        </section>
+
+
+        <!-- Generator Controls -->
+        <section class="generator-panel card">
+            <h2>Orb Controls</h2>
+            <p>Toggle the inline orb to test its placement and behavior.</p>
+
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label class="toggle-container">
+                        <span class="toggle-label text-nova">Inject Standard In-Page Orb</span>
+                        <div class="toggle-switch switch-nova">
+                            <input type="checkbox" id="toggle-in-page-orb">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                    <p class="control-desc">Injects the standard blue/purple orb directly into the hero section.</p>
+                </div>
+
+                <div class="control-group">
+                    <label class="toggle-container">
+                        <span class="toggle-label text-green">Inject Green In-Page Orb</span>
+                        <div class="toggle-switch switch-green">
+                            <input type="checkbox" id="toggle-in-page-orb-green">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                    <p class="control-desc">Injects the emerald green variant directly into the hero section.</p>
+                </div>
+
+                <div class="control-group" style="grid-column: 1 / -1; border-bottom: 1px solid var(--border-color);">
+                    <label class="toggle-container">
+                        <span class="toggle-label text-pink-blue" style="color: #ff007f;">Inject Pink Blue In-Page
+                            Orb</span>
+                        <div class="toggle-switch switch-pink-blue">
+                            <input type="checkbox" id="toggle-in-page-orb-pb">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                    <p class="control-desc">Injects the vibrant pink and electric blue variant directly into the hero
+                        section.</p>
+                </div>
+
+                <div class="control-group" style="grid-column: 1 / -1; padding-bottom: 0;">
+                    <label class="toggle-container">
+                        <span class="toggle-label" style="color: #c084fc;">Inject Purple Mesh Orb</span>
+                        <div class="toggle-switch switch-mesh-purple">
+                            <input type="checkbox" id="toggle-mesh-purple">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                    <p class="control-desc">Injects a vibrant purple 3D WebGL wireframe element.</p>
+                </div>
+
+                <div class="control-group" style="grid-column: 1 / -1; padding-bottom: 0;">
+                    <label class="toggle-container">
+                        <span class="toggle-label" style="color: #38bdf8;">Inject Blue Mesh Orb</span>
+                        <div class="toggle-switch switch-mesh-blue">
+                            <input type="checkbox" id="toggle-mesh-blue">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                    <p class="control-desc">Injects a glowing light blue 3D WebGL wireframe element.</p>
+                </div>
+
+                <div class="control-group" style="grid-column: 1 / -1; padding-bottom: 0;">
+                    <label class="toggle-container">
+                        <span class="toggle-label" style="color: #10b981;">Inject Green Mesh Orb</span>
+                        <div class="toggle-switch switch-mesh-green">
+                            <input type="checkbox" id="toggle-mesh-green">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                    <p class="control-desc">Injects an emerald green 3D WebGL wireframe element.</p>
+                </div>
+            </div>
+
+            <!-- Action Row -->
+            <div class="action-row" style="margin-top: 20px; padding-top: 20px; gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="copy-in-page-btn">
+                    <span class="icon">📋</span> Copy Standard Snippet
+                </button>
+                <button class="btn btn-outline" id="copy-in-page-green-btn"
+                    style="border-color: #10b981; color: #10b981;">
+                    <span class="icon">📋</span> Copy Green Snippet
+                </button>
+                <button class="btn btn-outline" id="copy-in-page-pb-btn" style="border-color: #ff007f; color: #ff007f;">
+                    <span class="icon">📋</span> Copy Pink Blue Snippet
+                </button>
+                <button class="btn btn-outline" id="copy-mesh-purple-btn"
+                    style="border-color: #c084fc; color: #c084fc;">
+                    <span class="icon">📋</span> Copy Purple Mesh
+                </button>
+                <button class="btn btn-outline" id="copy-mesh-blue-btn" style="border-color: #38bdf8; color: #38bdf8;">
+                    <span class="icon">📋</span> Copy Blue Mesh
+                </button>
+                <button class="btn btn-outline" id="copy-mesh-green-btn" style="border-color: #10b981; color: #10b981;">
+                    <span class="icon">📋</span> Copy Green Mesh
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="toast hidden">Snippet Copied! Paste it anywhere in your website's HTML body.
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AI Agency Mentorship. Internal Tooling.</p>
+        </div>
+    </footer>
+
+    <script src="in-page-script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,572 @@
+<!-- ========================================== -->
+<!-- ⚙️ WIDGET SETTINGS - ENTER YOUR IDs HERE -->
+<!-- ========================================== -->
+<script>
+    window.VOICE_AI_CONFIG = {
+        locationId: 'YOUR_LOCATION_ID_HERE',        // E.g. uLevhyRG6...
+        widgetId: 'YOUR_WIDGET_ID_HERE',            // E.g. 697ac304...
+        voiceAiConfigId: 'YOUR_AGENT_ID_HERE'       // E.g. 6986aa6d...
+    };
+</script>
+
+<!-- ========================================== -->
+<!--             DO NOT EDIT BELOW              -->
+<!-- ========================================== -->
+
+<style>
+/* Voice AI Widget Styles - Animated Bubble */
+#voiceai-widget-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+/* Default CTA Prompt */
+.voiceai-cta {
+    background: white;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+    position: relative;
+    animation: bounce-cta 2s infinite;
+    transform-origin: bottom right;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.voiceai-cta span {
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* Little tail on the speech bubble */
+.voiceai-cta::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    right: 35px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    transform: rotate(45deg);
+    box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes bounce-cta {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Hide CTA when widget is active */
+.voiceai-btn.active~.voiceai-cta {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+}
+
+/* Glassmorphism Label */
+.voiceai-glass-label {
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    animation: float-bubble 4s ease-in-out infinite reverse;
+    transform-origin: bottom right;
+    transition: opacity 0.3s ease;
+}
+
+/* Hide label when call is active */
+.voiceai-btn.active~.voiceai-glass-label {
+    opacity: 0;
+}
+
+.voiceai-btn {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: #0f172a;
+    /* Dark core */
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+    overflow: hidden;
+
+    /* Floating idle animation */
+    animation: float-bubble 4s ease-in-out infinite;
+
+    /* CSS variables for smooth color transitions */
+    --orb-c1: rgba(16, 185, 129, 0.85);
+    /* Green */
+    --orb-c2: rgba(5, 150, 105, 0.85);
+    --orb-c3: rgba(52, 211, 153, 0.85);
+}
+
+@keyframes float-bubble {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.voiceai-btn:hover:not(:disabled) {
+    transform: translateY(-5px) scale(1.05) !important;
+    box-shadow: 0 15px 25px rgba(16, 185, 129, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.voiceai-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Active State (Blue talking mode) */
+.voiceai-btn.active {
+    width: 85px;
+    height: 85px;
+    --orb-c1: rgba(59, 130, 246, 0.85);
+    /* Blue */
+    --orb-c2: rgba(37, 99, 235, 0.85);
+    --orb-c3: rgba(96, 165, 250, 0.85);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Hovering while active (Red hangup mode) */
+.voiceai-btn.active:hover {
+    --orb-c1: rgba(239, 68, 68, 0.85);
+    /* Red */
+    --orb-c2: rgba(220, 38, 38, 0.85);
+    --orb-c3: rgba(248, 113, 113, 0.85);
+    box-shadow: 0 15px 35px rgba(239, 68, 68, 0.6), inset 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Button Content (Icons/Spinners) over the orb */
+.voiceai-btn-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.voiceai-icon {
+    font-size: 26px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transition: all 0.3s ease;
+}
+
+/* Change icon to phone hangup when hovering over the active call */
+.voiceai-btn.active:hover .voiceai-icon {
+    transform: rotate(135deg);
+    /* playful hangup rotation */
+}
+
+/* Spinner during connecting */
+.voiceai-spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: voiceai-spin 0.8s linear infinite;
+    display: none;
+}
+
+.voiceai-btn.loading .voiceai-spinner {
+    display: inline-block;
+}
+
+.voiceai-btn.loading .voiceai-icon {
+    display: none;
+}
+
+@keyframes voiceai-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Status Tooltip */
+.voiceai-status {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 25px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.voiceai-status.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.voiceai-status.error {
+    background: rgba(239, 68, 68, 0.95);
+    color: white;
+}
+
+.voiceai-status.success {
+    background: rgba(59, 130, 246, 0.95);
+    color: white;
+}
+
+/* AI Orb Animation Layers container */
+.voiceai-wave-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 1;
+    /* Below icons */
+}
+
+/* Individual blurry spots simulating dynamic orb gradients */
+.orb-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    filter: blur(15px);
+    mix-blend-mode: screen;
+    transition: background-color 0.5s ease;
+}
+
+.layer1 {
+    background-color: var(--orb-c1);
+    top: -15%;
+    left: -15%;
+    animation: orb-flow 3s ease-in-out infinite alternate;
+}
+
+.layer2 {
+    background-color: var(--orb-c2);
+    top: 15%;
+    right: -15%;
+    animation: orb-flow 4s ease-in-out infinite alternate-reverse;
+}
+
+.layer3 {
+    background-color: var(--orb-c3);
+    bottom: -15%;
+    left: 0%;
+    animation: orb-spin 5s linear infinite;
+}
+
+@keyframes orb-flow {
+    0% {
+        transform: scale(1) translate(-10%, -10%);
+    }
+
+    100% {
+        transform: scale(1.3) translate(10%, 10%);
+    }
+}
+
+@keyframes orb-spin {
+    0% {
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.3);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1.1);
+    }
+}
+</style>
+
+<!-- Voice AI Button - Animated Orb -->
+<div id="voiceai-widget-container" class="voiceai-widget-container">
+    <!-- New Liquid Glass Label -->
+    <div class="voiceai-glass-label">Website Voice Chat</div>
+
+    <button id="voiceai-btn" class="voiceai-btn" aria-label="Start Voice Call">
+        <div class="voiceai-wave-container">
+            <div class="orb-layer layer1"></div>
+            <div class="orb-layer layer2"></div>
+            <div class="orb-layer layer3"></div>
+        </div>
+        <div class="voiceai-btn-content">
+            <div class="voiceai-spinner"></div>
+            <span class="voiceai-icon">🎙️</span>
+        </div>
+    </button>
+    <div id="voiceai-status" class="voiceai-status"></div>
+</div>
+<script>
+// voice-widget.js
+function initVoiceWidget(configOptions) {
+    // Load LiveKit SDK if not already loaded
+    if (typeof window.LivekitClient === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/livekit-client@1.15.4/dist/livekit-client.umd.min.js';
+        script.defer = true;
+        document.head.appendChild(script);
+
+        script.onload = () => setupVoiceButton(configOptions);
+        script.onerror = () => console.error('Voice AI Widget: Failed to load LiveKit SDK');
+    } else {
+        setupVoiceButton(configOptions);
+    }
+}
+
+function setupVoiceButton(userConfig) {
+    const container = document.getElementById('voiceai-widget-container');
+    if (!container) {
+        console.error('Voice AI Widget: HTML container missing on page.');
+        return;
+    }
+
+    // Default configurations merged with user provided config
+    const CONFIG = {
+        locationId: '',
+        widgetId: '',
+        voiceAiConfigId: '', // Assume this is Agent ID?
+        apiEndpoint: 'https://services.leadconnectorhq.com/chat-widget/public/start-voice-ai-call/',
+        livekitUrl: 'wss://retell-ai-4ihahnq7.livekit.cloud',
+        ...userConfig
+    };
+
+    let room = null;
+    let isCallActive = false;
+
+    const callButton = document.getElementById('voiceai-btn');
+    const buttonText = callButton.querySelector('.voiceai-text');
+    const statusDiv = document.getElementById('voiceai-status');
+    const icon = callButton.querySelector('.voiceai-icon');
+
+    // Helpers
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function generateMongoId() {
+        const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+        const random = Array.from({ length: 16 }, () =>
+            Math.floor(Math.random() * 16).toString(16)
+        ).join('');
+        return timestamp + random;
+    }
+
+    function generateContactId() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < 20; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    function showStatus(message, type) {
+        statusDiv.textContent = message;
+        statusDiv.className = 'voiceai-status visible ' + (type || '');
+        setTimeout(() => {
+            statusDiv.classList.remove('visible');
+        }, 4000);
+    }
+
+    async function startCall() {
+        if (!CONFIG.locationId || !CONFIG.widgetId || !CONFIG.voiceAiConfigId) {
+            showStatus('Configuration Error. Missing IDs.', 'error');
+            return;
+        }
+
+        callButton.disabled = true;
+        callButton.classList.add('loading');
+        showStatus('Agent Connecting...', '');
+
+        try {
+            const sessionId = generateUUID();
+            const payload = {
+                contactId: generateContactId(),
+                callId: generateMongoId(),
+                widgetId: CONFIG.widgetId,
+                locationId: CONFIG.locationId,
+                sessionId: sessionId,
+                sessionFingerprint: generateUUID(),
+                eventData: {
+                    source: 'direct',
+                    referrer: document.referrer || '',
+                    keyword: '',
+                    adSource: '',
+                    url_params: {},
+                    page: {
+                        url: window.location.href,
+                        title: document.title
+                    },
+                    timestamp: Date.now(),
+                    campaign: '',
+                    contactSessionIds: {
+                        ids: [sessionId]
+                    },
+                    type: 'page-visit',
+                    pageVisitType: 'text-widget',
+                    domain: window.location.hostname,
+                    version: 'v3',
+                    parentId: '',
+                    parentName: '',
+                    fingerprint: null,
+                    documentURL: window.location.href
+                }
+            };
+
+            const response = await fetch(CONFIG.apiEndpoint + CONFIG.voiceAiConfigId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error('Server connection failed (' + response.status + ')');
+            }
+
+            const data = await response.json();
+
+            room = new window.LivekitClient.Room({
+                adaptiveStream: true,
+                dynacast: true,
+                audioCaptureDefaults: {
+                    autoGainControl: true,
+                    echoCancellation: true,
+                    noiseSuppression: true
+                }
+            });
+
+            room.on(window.LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                if (track.kind === window.LivekitClient.Track.Kind.Audio) {
+                    const audioElement = track.attach();
+                    audioElement.setAttribute('data-voiceai-audio', 'voiceai-widget');
+                    document.body.appendChild(audioElement);
+                }
+            });
+
+            room.on(window.LivekitClient.RoomEvent.Disconnected, () => {
+                if (isCallActive) endCall();
+            });
+
+            await room.connect(CONFIG.livekitUrl, data.accessToken);
+            await room.localParticipant.setMicrophoneEnabled(true);
+
+            isCallActive = true;
+            callButton.classList.remove('loading');
+            callButton.classList.add('active'); // Applies the red "End Call" styling instantly
+            if (buttonText) buttonText.textContent = 'End Call';
+            callButton.disabled = false;
+            showStatus('Connected successfully', 'success');
+
+        } catch (error) {
+            console.error('Widget Error starting call:', error);
+            showStatus('Connection failed: ' + error.message, 'error');
+            callButton.classList.remove('loading');
+            callButton.disabled = false;
+        }
+    }
+
+    async function endCall() {
+        callButton.disabled = true;
+        showStatus('Disconnecting...', '');
+
+        try {
+            if (room) {
+                await room.disconnect();
+                room = null;
+            }
+
+            // Clean up injected audio element tracking
+            document.querySelectorAll('[data-voiceai-audio="voiceai-widget"]').forEach(el => el.remove());
+
+            isCallActive = false;
+            callButton.classList.remove('active');
+            if (buttonText) buttonText.textContent = 'Connect Agent';
+            callButton.disabled = false;
+            showStatus('Call ended', '');
+
+        } catch (error) {
+            console.error('Widget Error ending call:', error);
+            callButton.disabled = false;
+        }
+    }
+
+    callButton.addEventListener('click', () => {
+        if (isCallActive) {
+            endCall();
+        } else {
+            startCall();
+        }
+    });
+
+    window.addEventListener('beforeunload', () => {
+        if (room && isCallActive) room.disconnect();
+    });
+
+    console.log("Voice AI Widget initialized.");
+}
+
+    // Initialize the widget using the config from the top
+    if (window.VOICE_AI_CONFIG) {
+        initVoiceWidget(window.VOICE_AI_CONFIG);
+    } else {
+        console.error("Voice AI Widget: Missing window.VOICE_AI_CONFIG");
+    }
+</script>
