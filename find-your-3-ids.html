@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your 3 IDs | Voice AI Widget Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        .ids-page {
+            padding: 40px 0 80px;
+        }
+
+        .ids-hero {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .ids-hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 10px;
+        }
+
+        .ids-hero p {
+            color: var(--text-secondary);
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .ids-links {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ids-list {
+            display: grid;
+            gap: 22px;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .id-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .id-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .id-card p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .id-card ol {
+            margin-left: 20px;
+            color: var(--text-primary);
+            line-height: 1.75;
+        }
+
+        .id-card li + li {
+            margin-top: 2px;
+        }
+
+        .id-preview-wrap {
+            margin-top: 16px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .id-preview-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .id-preview {
+            width: min(100%, 380px);
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #0a0f14;
+            cursor: zoom-in;
+            display: block;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .id-preview:hover {
+            border-color: rgba(16, 185, 129, 0.35);
+            box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 10px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .id-hint {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-top: 8px;
+        }
+
+        .light-preview {
+            background: #f1f5f9;
+        }
+
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 12, 0.86);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 30000;
+            padding: 18px;
+        }
+
+        .image-modal.open {
+            display: flex;
+        }
+
+        .image-modal-content {
+            position: relative;
+            width: min(1100px, 100%);
+            background: rgba(10, 15, 20, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 14px 14px 10px;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .image-modal img {
+            display: block;
+            width: 100%;
+            max-height: 78vh;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #02070b;
+        }
+
+        .image-modal-caption {
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 640px) {
+            .id-card {
+                padding: 18px;
+            }
+
+            .id-preview {
+                width: 100%;
+                max-height: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">🆔</span> Find Your 3 IDs
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+                <a href="index.html" class="internal-link">← Main Generator</a>
+                <a href="in-page-orb.html" class="internal-link">In-Page Orbs →</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container ids-page">
+        <section class="ids-hero">
+            <h1>Find Your 3 IDs</h1>
+            <p>Use these 3 values to configure the Voice AI widgets and in-page orbs: <strong>Widget ID</strong>, <strong>Location ID</strong>, and <strong>Agent ID</strong>.</p>
+            <div class="ids-links">
+                <a href="index.html" class="btn btn-outline">Back to Widget Generator</a>
+                <a href="in-page-orb.html" class="btn btn-outline">Open In-Page Orb Demo</a>
+            </div>
+        </section>
+
+        <section class="ids-list">
+            <article class="id-card">
+                <h2>1. Find Your Widget ID</h2>
+                <p>How to find your Widget ID</p>
+                <ol>
+                    <li>Log in to your LeadConnector account.</li>
+                    <li>Navigate to <strong>Settings → Voice AI</strong>.</li>
+                    <li>Select your Voice AI widget.</li>
+                    <li>Copy the <strong>Widget ID</strong> from the configuration panel.</li>
+                </ol>
+                <div class="id-preview-wrap">
+                    <div class="id-preview-label">Widget ID walkthrough (`widgetid.gif`)</div>
+                    <img src="widgetid.gif" alt="How to find the Widget ID in LeadConnector" class="id-preview" data-modal-caption="Widget ID walkthrough">
+                    <div class="id-hint">Click the image to enlarge.</div>
+                </div>
+            </article>
+
+            <article class="id-card">
+                <h2>2. Find Your Location ID</h2>
+                <p>How to find your Location ID</p>
+                <ol>
+                    <li>Log in to your LeadConnector account.</li>
+                    <li>Navigate to <strong>Settings → Business Profile</strong>.</li>
+                    <li>Your <strong>Location ID</strong> appears in the URL or under <strong>API Access</strong>.</li>
+                    <li>Copy the <strong>Location ID</strong> value.</li>
+                </ol>
+                <div class="id-preview-wrap">
+                    <div class="id-preview-label">Location ID example (`locationid.gif`)</div>
+                    <img src="locationid.gif" alt="How to find the Location ID in LeadConnector" class="id-preview light-preview" data-modal-caption="Location ID example">
+                    <div class="id-hint">Click the image to enlarge.</div>
+                </div>
+            </article>
+
+            <article class="id-card">
+                <h2>3. Find Your Agent ID</h2>
+                <p>How to find your Agent ID</p>
+                <ol>
+                    <li>Log in to your LeadConnector account.</li>
+                    <li>Navigate to <strong>Settings → Voice AI</strong>.</li>
+                    <li>Select your Voice AI agent/configuration.</li>
+                    <li>Copy the <strong>Configuration ID</strong> (`voiceAiConfigId`).</li>
+                </ol>
+                <div class="id-preview-wrap">
+                    <div class="id-preview-label">Agent ID walkthrough (`agentid.gif`)</div>
+                    <img src="agentid.gif" alt="How to find the Agent ID in LeadConnector Voice AI" class="id-preview" data-modal-caption="Agent ID walkthrough">
+                    <div class="id-hint">Click the image to enlarge.</div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <div id="image-modal" class="image-modal" aria-hidden="true">
+        <div class="image-modal-content" role="dialog" aria-modal="true" aria-label="Expanded instruction image">
+            <button class="image-modal-close" id="image-modal-close" aria-label="Close image viewer">&times;</button>
+            <img id="image-modal-img" src="" alt="">
+            <div class="image-modal-caption" id="image-modal-caption"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AI Agency Mentorship. Internal Tooling.</p>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('image-modal-img');
+            const modalCaption = document.getElementById('image-modal-caption');
+            const closeBtn = document.getElementById('image-modal-close');
+            const previews = document.querySelectorAll('.id-preview');
+
+            function openModal(img) {
+                modalImg.src = img.src;
+                modalImg.alt = img.alt || '';
+                modalCaption.textContent = img.dataset.modalCaption || '';
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                modalImg.src = '';
+                document.body.style.overflow = '';
+            }
+
+            previews.forEach((img) => {
+                img.addEventListener('click', () => openModal(img));
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+            });
+        })();
+    </script>
+</body>
+
+</html>
