@@ -26,6 +26,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inject logic
+    async function executeScriptsInOrder(sourceRoot, mountNode) {
+        const scripts = Array.from(sourceRoot.getElementsByTagName('script'));
+
+        for (const originalScript of scripts) {
+            const newScript = document.createElement('script');
+
+            // Preserve common attributes in case snippets add them later.
+            for (const attr of originalScript.attributes) {
+                newScript.setAttribute(attr.name, attr.value);
+            }
+
+            if (originalScript.src) {
+                await new Promise((resolve, reject) => {
+                    newScript.onload = resolve;
+                    newScript.onerror = () => reject(new Error(`Failed to load script: ${originalScript.src}`));
+                    mountNode.appendChild(newScript);
+                });
+            } else {
+                newScript.textContent = originalScript.textContent;
+                mountNode.appendChild(newScript);
+            }
+        }
+    }
+
     async function injectWidget(snippetPath, toggleElement) {
         removeWidget(); // Ensure clean slate before injecting
 
@@ -45,17 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Re-eval scripts
-            const scripts = tempDiv.getElementsByTagName('script');
-            for (let i = 0; i < scripts.length; i++) {
-                const newScript = document.createElement('script');
-                if (scripts[i].src) {
-                    newScript.src = scripts[i].src;
-                } else {
-                    newScript.textContent = scripts[i].textContent;
-                }
-                injectionPoint.appendChild(newScript);
-            }
+            // Re-eval scripts in order. This is critical for mesh snippets that depend on
+            // external CDN scripts (Three.js / LiveKit) before the inline init script runs.
+            await executeScriptsInOrder(tempDiv, injectionPoint);
 
         } catch (error) {
             console.error("Error injecting widget:", error);

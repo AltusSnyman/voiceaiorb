@@ -206,6 +206,29 @@ h3 {
     font-size: 1.1rem;
 }
 
+.generator-demo-link {
+    margin: 14px 0 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.generator-demo-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid var(--accent-core);
+    color: var(--accent-light);
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.12) inset;
+}
+
+.generator-demo-btn:hover {
+    background: rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
 .generator-panel {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
