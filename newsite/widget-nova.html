@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Chat Bubble | Voice AI Collection</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .demo-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="demo-area"></div>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="index.html" class="logo">VoiceAI Collection</a>
+            <div class="nav-links">
+                <a href="index.html" class="btn btn-outline" style="padding: 8px 16px; font-size: 14px;">&larr; Back to
+                    Collection</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container widget-demo-container">
+        <h1 class="demo-title">Nova Chat Bubble</h1>
+        <p class="demo-desc">Look to the bottom right of your screen. Click the launcher to open the floating visual
+            Voice terminal. Connects automatically.</p>
+
+        <div class="code-block" style="text-align: center;">
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">The snippet below is injected with your sample
+                Agent keys. Copy or download the snippet to install on your own sites before the closing
+                <code>&lt;/body&gt;</code> tag.</p>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-btn">Copy HTML Snippet</button>
+                <button class="btn btn-outline" id="download-btn">Download .html Snippet</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast">Copied to Clipboard!</div>
+
+    <!-- Injection point for the live widget -->
+    <div id="widget-preview"></div>
+
+    <script src="scripts.js"></script>
+    <script>
+        setupSnippetButtons('../widget/nova-widget-snippet.html', 'copy-btn', 'download-btn', 'nova-widget-snippet.html');
+        renderLiveSnippet('../widget/nova-widget-snippet.html', 'widget-preview');
+    </script>
+</body>
+
+</html>

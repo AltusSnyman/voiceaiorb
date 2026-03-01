@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In-Page Orbs Collection | Voice AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="index.html" class="logo">VoiceAI Collection</a>
+            <div class="nav-links">
+                <a href="index.html" class="btn btn-outline" style="padding: 8px 16px; font-size: 14px;">&larr; Back to
+                    Collection</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="container" style="padding: 140px 0 60px; text-align: center;">
+        <h1 class="demo-title">In-Page Orbs</h1>
+        <p class="demo-desc" style="margin: 0 auto 40px;">Instead of floating widgets, embed these stunning Voice AI
+            orbs directly into your heroes or sections. See the live previews below, complete with your sample
+            credentials.</p>
+    </header>
+
+    <main class="container">
+
+        <!-- Standard Orb -->
+        <section class="orb-showcase">
+            <h2>Standard In-Page Orb</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">The standard blue/purple liquid glass orb.</p>
+            <div class="orb-display-area">
+                <iframe id="iframe-standard" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-standard">Copy Snippet</button>
+                <button class="btn btn-outline" id="dl-standard">Download Snippet</button>
+            </div>
+        </section>
+
+        <!-- Green Orb -->
+        <section class="orb-showcase">
+            <h2>Green In-Page Orb</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">The emerald green variant.</p>
+            <div class="orb-display-area">
+                <iframe id="iframe-green" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-green">Copy Snippet</button>
+                <button class="btn btn-outline" id="dl-green">Download Snippet</button>
+            </div>
+        </section>
+
+        <!-- Pink Blue Orb -->
+        <section class="orb-showcase">
+            <h2>Pink Blue In-Page Orb</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">Vibrant pink and electric blue liquid glass.
+            </p>
+            <div class="orb-display-area">
+                <iframe id="iframe-pb" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-pb">Copy Snippet</button>
+                <button class="btn btn-outline" id="dl-pb">Download Snippet</button>
+            </div>
+        </section>
+
+        <!-- Purple Mesh -->
+        <section class="orb-showcase">
+            <h2>Purple Mesh Orb</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">A vibrant purple 3D WebGL wireframe element.
+            </p>
+            <div class="orb-display-area">
+                <iframe id="iframe-mesh-purple" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-mesh-purple">Copy Snippet</button>
+                <button class="btn btn-outline" id="dl-mesh-purple">Download Snippet</button>
+            </div>
+        </section>
+
+        <!-- Blue Mesh -->
+        <section class="orb-showcase">
+            <h2>Blue Mesh Orb</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">A glowing light blue 3D WebGL wireframe
+                element.</p>
+            <div class="orb-display-area">
+                <iframe id="iframe-mesh-blue" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-mesh-blue">Copy Snippet</button>
+                <button class="btn btn-outline" id="dl-mesh-blue">Download Snippet</button>
+            </div>
+        </section>
+
+        <!-- Green Mesh -->
+        <section class="orb-showcase">
+            <h2>Green Mesh Orb</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">A reactive emerald green 3D wireframe.</p>
+            <div class="orb-display-area">
+                <iframe id="iframe-mesh-green" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="copy-mesh-green">Copy Snippet</button>
+                <button class="btn btn-outline" id="dl-mesh-green">Download Snippet</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer
+        style="border-top: 1px solid var(--border-color); padding: 40px 0; margin-top: 60px; text-align: center; color: var(--text-secondary);">
+        <div class="container">
+            <p>&copy; 2026 VoiceAI Collection.</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast">Copied to Clipboard!</div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // Setup buttons and iframes for all 6 variants
+        const orbs = [
+            { id: 'standard', path: '../widget/in-page-orb-snippet.html' },
+            { id: 'green', path: '../widget/in-page-orb-green-snippet.html' },
+            { id: 'pb', path: '../widget/in-page-orb-pink-blue-snippet.html' },
+            { id: 'mesh-purple', path: '../widget/in-page-orb-mesh-purple-snippet.html' },
+            { id: 'mesh-blue', path: '../widget/in-page-orb-mesh-blue-snippet.html' },
+            { id: 'mesh-green', path: '../widget/in-page-orb-mesh-green-snippet.html' }
+        ];
+
+        orbs.forEach(orb => {
+            setupSnippetButtons(orb.path, `copy-${orb.id}`, `dl-${orb.id}`, `${orb.id}-orb-snippet.html`);
+            renderLiveOrbIframe(orb.path, `iframe-${orb.id}`);
+        });
+    </script>
+</body>
+
+</html>

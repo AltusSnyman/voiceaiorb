@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your 3 IDs | Voice AI Collection</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .ids-page {
+            padding: 80px 0;
+        }
+
+        .ids-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .ids-hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .ids-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ids-list {
+            display: grid;
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .id-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .id-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .id-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .id-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .id-card ol {
+            margin-left: 24px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .id-card li {
+            margin-bottom: 8px;
+        }
+
+        .id-card li strong {
+            color: var(--text-primary);
+        }
+
+        .id-preview-wrap {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .id-preview-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .id-preview {
+            width: 100%;
+            max-width: 480px;
+            max-height: 280px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #000;
+            cursor: zoom-in;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .id-preview:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 10px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .id-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .light-preview {
+            background: #fff;
+        }
+
+        /* Modal Styles */
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 30000;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-modal.open {
+            display: flex;
+            opacity: 1;
+        }
+
+        .image-modal-content {
+            position: relative;
+            width: min(1200px, 100%);
+            background: #09090b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .image-modal.open .image-modal-content {
+            transform: scale(1);
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .image-modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .image-modal img {
+            display: block;
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #000;
+        }
+
+        .image-modal-caption {
+            margin-top: 16px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .id-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="index.html" class="logo">VoiceAI Collection</a>
+            <div class="nav-links">
+                <a href="index.html" class="btn btn-outline" style="padding: 8px 16px; font-size: 14px;">&larr; Back to
+                    Collection</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container ids-page">
+        <section class="ids-hero">
+            <h1>Find Your 3 IDs</h1>
+            <p>Use these 3 values to configure the Voice AI widgets and in-page orbs for your own website:
+                <strong>Widget ID</strong>, <strong>Location ID</strong>, and <strong>Agent ID</strong>.</p>
+        </section>
+
+        <section class="ids-list">
+            <article class="id-card">
+                <h2>1. Find Your Widget ID</h2>
+                <p>Follow these steps within LeadConnector</p>
+                <ol>
+                    <li>Log in to your relevant sub-account.</li>
+                    <li>Navigate to <strong>Settings &rarr; Voice AI</strong>.</li>
+                    <li>Select the Voice AI widget you created.</li>
+                    <li>Copy the <strong>Widget ID</strong> from the right-hand configuration panel.</li>
+                </ol>
+                <div class="id-preview-wrap">
+                    <div class="id-preview-label">Widget ID walkthrough</div>
+                    <img src="assets/widgetid.gif" alt="How to find the Widget ID in LeadConnector" class="id-preview"
+                        data-modal-caption="Watch the animation to locate your Widget ID">
+                    <div class="id-hint">🔍 Click the image to enlarge.</div>
+                </div>
+            </article>
+
+            <article class="id-card">
+                <h2>2. Find Your Location ID</h2>
+                <p>Follow these steps within LeadConnector</p>
+                <ol>
+                    <li>Ensure you are in the correct sub-account.</li>
+                    <li>Navigate to <strong>Settings &rarr; Business Profile</strong>.</li>
+                    <li>Your <strong>Location ID</strong> appears in your browser's URL bar, or under <strong>API
+                            Access</strong>.</li>
+                    <li>Copy this value.</li>
+                </ol>
+                <div class="id-preview-wrap">
+                    <div class="id-preview-label">Location ID example</div>
+                    <img src="assets/locationid.gif" alt="How to find the Location ID in LeadConnector"
+                        class="id-preview light-preview"
+                        data-modal-caption="Watch the animation to locate your Location ID">
+                    <div class="id-hint">🔍 Click the image to enlarge.</div>
+                </div>
+            </article>
+
+            <article class="id-card">
+                <h2>3. Find Your Agent ID</h2>
+                <p>Follow these steps within LeadConnector</p>
+                <ol>
+                    <li>Navigate to <strong>Settings &rarr; Voice AI</strong>.</li>
+                    <li>Select the specific Voice AI agent configuration you want to use.</li>
+                    <li>Look for the <strong>Configuration ID</strong> (also known as `voiceAiConfigId`).</li>
+                    <li>Copy this value.</li>
+                </ol>
+                <div class="id-preview-wrap">
+                    <div class="id-preview-label">Agent ID walkthrough</div>
+                    <img src="assets/agentid.gif" alt="How to find the Agent ID in LeadConnector Voice AI"
+                        class="id-preview" data-modal-caption="Watch the animation to locate your Agent ID">
+                    <div class="id-hint">🔍 Click the image to enlarge.</div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- Modal for expanding images -->
+    <div id="image-modal" class="image-modal" aria-hidden="true">
+        <div class="image-modal-content" role="dialog" aria-modal="true" aria-label="Expanded instruction image">
+            <button class="image-modal-close" id="image-modal-close" aria-label="Close image viewer">&times;</button>
+            <img id="image-modal-img" src="" alt="">
+            <div class="image-modal-caption" id="image-modal-caption"></div>
+        </div>
+    </div>
+
+    <footer
+        style="border-top: 1px solid var(--border-color); padding: 40px 0; margin-top: 60px; text-align: center; color: var(--text-secondary);">
+        <div class="container">
+            <p>&copy; 2026 VoiceAI Collection.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Modal functionality for enlarging GIFs
+        (function () {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('image-modal-img');
+            const modalCaption = document.getElementById('image-modal-caption');
+            const closeBtn = document.getElementById('image-modal-close');
+            const previews = document.querySelectorAll('.id-preview');
+
+            function openModal(img) {
+                modalImg.src = img.src;
+                modalImg.alt = img.alt || '';
+                modalCaption.textContent = img.dataset.modalCaption || '';
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                setTimeout(() => {
+                    modalImg.src = '';
+                }, 300); // Wait for fade out animation
+                document.body.style.overflow = '';
+            }
+
+            previews.forEach((img) => {
+                img.addEventListener('click', () => openModal(img));
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+            });
+        })();
+    </script>
+</body>
+
+</html>
